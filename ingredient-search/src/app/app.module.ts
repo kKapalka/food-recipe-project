@@ -6,12 +6,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { NgbdModalContent, SearchComponent } from './search/search.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { IngredientClusterComponent } from './ingredient-cluster/ingredient-cluster.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SearchComponent,
-    NgbdModalContent
+    NgbdModalContent,
+    IngredientClusterComponent
   ],
   imports: [
     BrowserModule,

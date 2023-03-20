@@ -16,3 +16,12 @@ export interface IngredientList{
 export interface NewIngredientList{
   results: NewIngredient[];
 }
+
+export interface ClusteredIngredient{
+  suggestedClusterName: string,
+  ingredients: Ingredient[];
+}
+
+export interface ClusteredIngredientList {
+  results: ClusteredIngredient[];
+}

@@ -1,10 +1,15 @@
 import json
+from collections import Counter
 
 from django.db.models import Q
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 from .models import Ingredient, NewIngredient, IngredientSynonym
+
+import pandas as pd
+from sklearn.cluster import DBSCAN
+from sklearn.feature_extraction.text import TfidfVectorizer
 from fuzzywuzzy import fuzz
 
 
@@ -43,6 +48,49 @@ def search_ingredients_with_synonyms(request):
 
     response_data = [{'id': ingredient.id, 'name': ingredient.name} for ingredient in sorted_ingredients]
     return JsonResponse({'results': response_data})
+
+
+@csrf_exempt
+@require_POST
+def search_clustered_ingredients(request):
+    data = json.loads(request.body)
+    name = data.get('name', '')
+    eps = data.get('epsilon', '')
+    min_samples = data.get('min_samples', '')
+    available_ingredients = Ingredient.objects.filter(name__icontains=name)
+
+    # Convert the text to a matrix of TF-IDF features
+    vectorizer = TfidfVectorizer(stop_words='english')
+    X = vectorizer.fit_transform([ingredient.name for ingredient in available_ingredients])
+
+    dbscan = DBSCAN(eps=eps, min_samples=min_samples)
+    dbscan.fit(X)
+    labels = dbscan.labels_
+
+    clustered_ingredients = []
+
+    for i in range(max(labels) + 1):
+        ingredient_cluster = []
+        for j in range(len(available_ingredients)):
+            if labels[j] == i:
+                ingredient_cluster.append(available_ingredients[j])
+
+        words = []
+        for entry in ingredient_cluster:
+            words.extend(entry.name.split())
+        common_words = set(words)
+        for entry in ingredient_cluster:
+            common_words = common_words.intersection(set(entry.name.split()))
+        word_counts = Counter(words)
+        common_word_counts = {word: count for word, count in word_counts.items() if word in common_words}
+        sorted_words = sorted(common_word_counts.items(), key=lambda x: x[1], reverse=True)
+        cluster_name = " ".join([x[0] for x in sorted_words])
+        clustered_ingredients.append({
+            'suggestedClusterName': cluster_name,
+            'ingredients': [{'id': ingredient.id, 'name': ingredient.name} for ingredient in ingredient_cluster]
+        })
+
+    return JsonResponse({'results': clustered_ingredients})
 
 
 

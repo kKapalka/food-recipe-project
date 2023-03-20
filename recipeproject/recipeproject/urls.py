@@ -17,10 +17,11 @@ from django.contrib import admin
 from django.urls import path
 
 from recipeapp.views import create_new_ingredient, search_new_ingredients, \
-    create_ingredient_synonym, search_ingredients_with_synonyms
+    create_ingredient_synonym, search_ingredients_with_synonyms, search_clustered_ingredients
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('ingredient-cluster', search_clustered_ingredients, name='search_clustered_ingredients'),
     path('ingredients/search', search_ingredients_with_synonyms, name='search_ingredients_with_synonyms'),
     path('new-ingredient/', create_new_ingredient, name='create_new_ingredient'),
     path('new-ingredients/search', search_new_ingredients, name='search_new_ingredients'),
