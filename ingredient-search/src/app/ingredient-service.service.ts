@@ -15,9 +15,9 @@ export class IngredientServiceService {
     return this.http.get<IngredientList>('http://localhost:8000/new-ingredients/search');
   }
 
-  searchIngredients(searchQuery: string): Observable<IngredientList>{
-    const url = `http://localhost:8000/ingredients/search?query=${encodeURIComponent(searchQuery)}`;
-    return this.http.get<IngredientList>(url)
+  searchIngredients(keyword: string, selectedIngredientId: number): Observable<IngredientList>{
+    const url = `http://localhost:8000/ingredients/search`;
+    return this.http.post<IngredientList>(url, {keyword: keyword, newIngredientId: selectedIngredientId})
   }
 
   createNewIngredient(name: string): Observable<NewIngredient>{

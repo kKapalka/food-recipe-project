@@ -16,15 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from recipeapp.views import search_ingredients, create_new_ingredient, search_new_ingredients, \
-    create_ingredient_synonym, search_related_ingredients
+from recipeapp.views import create_new_ingredient, search_new_ingredients, \
+    create_ingredient_synonym, search_ingredients_with_synonyms
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('ingredients/search', search_ingredients, name='search_ingredients'),
+    path('ingredients/search', search_ingredients_with_synonyms, name='search_ingredients_with_synonyms'),
     path('new-ingredient/', create_new_ingredient, name='create_new_ingredient'),
     path('new-ingredients/search', search_new_ingredients, name='search_new_ingredients'),
     path('synonym/', create_ingredient_synonym, name='create_ingredient_synonym'),
-    path('related-ingredients/search', search_related_ingredients, name='search_related_ingredients'),
 
 ]

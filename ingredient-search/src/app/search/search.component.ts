@@ -45,17 +45,6 @@ export class SearchComponent implements OnInit {
     this.newIngredientModalRef = modalRef;
   }
 
-  searchRelatedIngredients(): void {
-    if (!this.selectedNewIngredient) {
-      return;
-    }
-    this.ingredientService.searchRelatedIngredients(this.selectedNewIngredient).subscribe(result => {
-      console.log(result)
-      this.searchResults = result.results;
-      console.log(this.searchResults);
-    });
-  }
-
   onNewIngredientSelected(event: any, ingredient: Ingredient) {
     // find the newIngredient object
     const newIngredient = this.currentNewIngredients.find(
@@ -78,10 +67,10 @@ export class SearchComponent implements OnInit {
 
 
   searchIngredients(){
-    if (!this.searchQuery) {
+    if (!this.searchQuery || !this.selectedNewIngredient) {
       return;
     }
-    this.ingredientService.searchIngredients(this.searchQuery).subscribe(result => {
+    this.ingredientService.searchIngredients(this.searchQuery, this.selectedNewIngredient).subscribe(result => {
       this.searchResults = result.results;
     });
   }
