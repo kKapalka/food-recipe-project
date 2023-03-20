@@ -61,12 +61,12 @@ def search_clustered_ingredients(request):
 
     # Convert the text to a matrix of TF-IDF features
     vectorizer = TfidfVectorizer(stop_words='english')
-    X = vectorizer.fit_transform([ingredient.name for ingredient in available_ingredients])
+    X = vectorizer.fit_transform([ingredient.name + ' ' + name + ' ' + name for ingredient in available_ingredients])
 
     dbscan = DBSCAN(eps=eps, min_samples=min_samples)
     dbscan.fit(X)
     labels = dbscan.labels_
-
+    clusteredCount = 0
     clustered_ingredients = []
 
     for i in range(max(labels) + 1):
@@ -74,6 +74,7 @@ def search_clustered_ingredients(request):
         for j in range(len(available_ingredients)):
             if labels[j] == i:
                 ingredient_cluster.append(available_ingredients[j])
+                clusteredCount = clusteredCount + 1
 
         words = []
         for entry in ingredient_cluster:
@@ -90,7 +91,7 @@ def search_clustered_ingredients(request):
             'ingredients': [{'id': ingredient.id, 'name': ingredient.name} for ingredient in ingredient_cluster]
         })
 
-    return JsonResponse({'results': clustered_ingredients})
+    return JsonResponse({'results': clustered_ingredients, 'clustered_count': clusteredCount, 'total_count': len(available_ingredients)})
 
 
 

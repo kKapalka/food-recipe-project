@@ -29,6 +29,14 @@ export class IngredientClusterComponent implements OnInit {
     this.detachedIngredients = this.detachedIngredients.concat(clusteredIngredient.ingredients);
   }
 
+  mergeClusters(clusteredIngredient: ClusteredIngredient, otherClusterName: string) {
+    const otherCluster = this.clusteredIngredients.find(ci => ci.suggestedClusterName === otherClusterName);
+    if (otherCluster) {
+      otherCluster.ingredients = otherCluster.ingredients.concat(clusteredIngredient.ingredients);
+      this.clusteredIngredients.splice(this.clusteredIngredients.indexOf(clusteredIngredient), 1);
+    }
+  }
+
   detachIngredient(clusteredIngredient: ClusteredIngredient, ingredientToDetach: Ingredient) {
     this.detachedIngredients.push(ingredientToDetach);
     this.clusteredIngredients.find(ci => ci.suggestedClusterName === clusteredIngredient.suggestedClusterName)!.ingredients.splice(clusteredIngredient.ingredients.indexOf(ingredientToDetach), 1);
