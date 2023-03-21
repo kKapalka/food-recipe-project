@@ -94,6 +94,30 @@ def search_clustered_ingredients(request):
     return JsonResponse({'results': clustered_ingredients, 'clustered_count': clusteredCount, 'total_count': len(available_ingredients)})
 
 
+@require_POST
+@csrf_exempt
+def confirmIngredientClusters(request):
+    data = json.loads(request.body)
+    clustered_ingredient_list = data['results']
+
+    for clustered_ingredient in clustered_ingredient_list:
+        suggested_cluster_name = clustered_ingredient['suggestedClusterName']
+        ingredients = clustered_ingredient['ingredients']
+
+        try:
+            new_ingredient = NewIngredient.objects.get(name=suggested_cluster_name)
+        except NewIngredient.DoesNotExist:
+            new_ingredient = NewIngredient.objects.create(name=suggested_cluster_name)
+
+        for ingredient in ingredients:
+            ingredient_obj = Ingredient.objects.get(id=ingredient['id'])
+            existing_synonym = IngredientSynonym.objects.filter(ingredient=ingredient_obj,
+                                                                new_ingredient=new_ingredient).first()
+            if not existing_synonym:
+                ingredient_synonym = IngredientSynonym.objects.create(ingredient=ingredient_obj,
+                                                                      new_ingredient=new_ingredient)
+
+    return JsonResponse({'message': 'Successfully created new ingredients and ingredient synonyms.'})
 
 @csrf_exempt
 @require_POST

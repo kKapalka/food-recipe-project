@@ -74,6 +74,8 @@
           </div>
         </li>
       </ul>
+      <button type="button" class="btn btn-sm btn-primary" *ngIf="detachedIngredients.length > 0" (click)="createCluster()">Create new cluster</button>
     </div>
   </div>
+  <button type="button" class="btn btn-sm btn-success"  *ngIf="clusteredIngredients.length > 0" (click)="confirmIngredientClusters()">Confirm Clustered Ingredients</button>
 </div>

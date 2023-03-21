@@ -125,6 +125,7 @@ class DjangoSession(models.Model):
 class Ingredient(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.TextField()
+    synonyms = models.ManyToManyField('NewIngredient', through='IngredientSynonym')
 
     class Meta:
         managed = False
@@ -132,15 +133,18 @@ class Ingredient(models.Model):
 
 
 class IngredientSynonym(models.Model):
+    id = models.BigAutoField(primary_key=True)
     ingredient = models.ForeignKey(Ingredient, models.DO_NOTHING, blank=True, null=True)
     new_ingredient = models.ForeignKey('NewIngredient', models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
         managed = False
+        unique_together = ('ingredient', 'new_ingredient')
         db_table = 'ingredient_synonym'
 
 
 class NewIngredient(models.Model):
+    id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
 
     class Meta:
