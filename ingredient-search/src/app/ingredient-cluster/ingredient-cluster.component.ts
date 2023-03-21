@@ -29,8 +29,10 @@ export class IngredientClusterComponent implements OnInit {
     this.detachedIngredients = this.detachedIngredients.concat(clusteredIngredient.ingredients);
   }
 
-  mergeClusters(clusteredIngredient: ClusteredIngredient, otherClusterName: string) {
-    const otherCluster = this.clusteredIngredients.find(ci => ci.suggestedClusterName === otherClusterName);
+  mergeClusters(clusteredIngredient: ClusteredIngredient, otherCluster?: ClusteredIngredient) {
+
+    console.log(clusteredIngredient.suggestedClusterName)
+    console.log(otherCluster?.suggestedClusterName)
     if (otherCluster) {
       otherCluster.ingredients = otherCluster.ingredients.concat(clusteredIngredient.ingredients);
       this.clusteredIngredients.splice(this.clusteredIngredients.indexOf(clusteredIngredient), 1);
@@ -42,9 +44,14 @@ export class IngredientClusterComponent implements OnInit {
     this.clusteredIngredients.find(ci => ci.suggestedClusterName === clusteredIngredient.suggestedClusterName)!.ingredients.splice(clusteredIngredient.ingredients.indexOf(ingredientToDetach), 1);
   }
 
-  attachIngredient(clusteredIngredient: ClusteredIngredient, ingredientToAttach: Ingredient) {
-    this.clusteredIngredients.find(ci => ci.suggestedClusterName === clusteredIngredient.suggestedClusterName)!.ingredients.push(ingredientToAttach);
-    this.detachedIngredients.splice(this.detachedIngredients.indexOf(ingredientToAttach), 1);
+  attachIngredient(ingredientToAttach: Ingredient, clusteredIngredient?: ClusteredIngredient) {
+    console.log(ingredientToAttach.name)
+    console.log(clusteredIngredient?.suggestedClusterName)
+    if (clusteredIngredient) {
+      ingredientToAttach.mergeClusterCandidate = undefined;
+      this.clusteredIngredients.find(ci => ci.suggestedClusterName === clusteredIngredient.suggestedClusterName)!.ingredients.push(ingredientToAttach);
+      this.detachedIngredients.splice(this.detachedIngredients.indexOf(ingredientToAttach), 1);
+    }
   }
 
   ngOnInit(): void {

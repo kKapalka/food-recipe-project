@@ -4,16 +4,15 @@ import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
-import { NgbdModalContent, SearchComponent } from './search/search.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { IngredientClusterComponent } from './ingredient-cluster/ingredient-cluster.component';
+import { ExcludeselfPipe } from './excludeself.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
-    SearchComponent,
-    NgbdModalContent,
-    IngredientClusterComponent
+    IngredientClusterComponent,
+    ExcludeselfPipe
   ],
   imports: [
     BrowserModule,

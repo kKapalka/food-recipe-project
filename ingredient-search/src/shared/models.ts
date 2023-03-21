@@ -1,7 +1,7 @@
 export interface Ingredient {
   id: number;
   name: string;
-  newIngredient?: NewIngredient;
+  mergeClusterCandidate?: ClusteredIngredient;
 }
 
 export interface NewIngredient {
@@ -20,6 +20,7 @@ export interface NewIngredientList{
 export interface ClusteredIngredient{
   suggestedClusterName: string,
   ingredients: Ingredient[];
+  mergeClusterCandidate?: ClusteredIngredient;
 }
 
 export interface ClusteredIngredientList {
